@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from 'react'
 import LogoNlwExpert from './assets/logo-nlw-expert.svg'
 import { NewNoteCard } from './components/new-note-card'
 import { NoteCard } from './components/note-card'
+import { toast } from 'sonner'
 
 interface NoteProps {
   id: string
@@ -34,6 +35,16 @@ export function App() {
     localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
+  function onNoteDeleted(id: string) {
+    const notesArray = notes.filter((note) => note.id !== id)
+
+    toast.success('Nota apagada com sucesso!')
+
+    setNotes(notesArray)
+
+    localStorage.setItem('notes', JSON.stringify(notesArray))
+  }
+
   function handleSearch(e: ChangeEvent<HTMLInputElement>) {
     const query = e.target.value
 
@@ -47,7 +58,7 @@ export function App() {
       : notes
 
   return (
-    <div className="mx-auto max-w-6xl my-12 space-y-6">
+    <div className="mx-auto max-w-6xl my-12 space-y-6 px-5">
       <img src={LogoNlwExpert} alt="NLW Expert" />
       <form className="w-full">
         <input
@@ -60,11 +71,11 @@ export function App() {
 
       <div className="h-px bg-slate-700" />
 
-      <div className="grid grid-cols-3 auto-rows-[250px] gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[250px] gap-6">
         <NewNoteCard onNoteCreated={onNoteCreated} />
 
         {filteredNotes.map((note) => (
-          <NoteCard key={note.id} note={note} />
+          <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted} />
         ))}
       </div>
     </div>
